@@ -19,6 +19,13 @@ class App extends React.Component {
     blogService.getAll().then(blogs =>
       this.setState({ blogs })
     )
+
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      this.setState({user})
+      blogService.setToken(user.token)
+    }
   } 
 
   login = async (event) => {
@@ -28,6 +35,8 @@ class App extends React.Component {
         username: this.state.username,
         password: this.state.password
       })
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
+      blogService.setToken(user.token)
       this.setState({ username: '', password: '', user})
     } catch(exception) {
       this.setState({
@@ -39,6 +48,11 @@ class App extends React.Component {
     }
   }
 
+  logout = async (event) => {
+    console.log('logout')
+    window.localStorage.removeItem('loggedBlogAppUser')
+  }
+
   handleLoginChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
@@ -48,7 +62,7 @@ class App extends React.Component {
     const loginForm = () => (
       <div>
         <h2>Log in the application</h2>
-        <form onSubmit={this.login}>
+        <form onSubmit={ this.login }>
           <div>
             username:
             <input
@@ -75,10 +89,16 @@ class App extends React.Component {
     const blogsSection = () => (
       <div>
         <h2>blogs</h2>
-        <p>{ this.state.user.name } logged in</p>
-        { this.state.blogs.map(blog => 
-          <Blog key={blog.id} blog={blog}/>
-        )}
+        <form onSubmit={ this.logout }>
+          <div>{ this.state.user.name } logged in&nbsp;
+          <button type="submit">logout</button></div>
+          <br/>
+          <div>  
+            { this.state.blogs.map(blog => 
+              <Blog key={blog.id} blog={blog}/>
+            )}
+          </div>
+        </form>
       </div>
     )
 
