@@ -1,5 +1,6 @@
 import React from 'react'
 import Blog from './components/Blog'
+import NewBlog from './components/NewBlog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -13,6 +14,7 @@ class App extends React.Component {
       password: '',
       user: null,
     }
+    this.newBlog = React.createRef()
   }
 
   componentDidMount() {
@@ -49,12 +51,16 @@ class App extends React.Component {
   }
 
   logout = async (event) => {
-    console.log('logout')
     window.localStorage.removeItem('loggedBlogAppUser')
   }
 
   handleLoginChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
+  }
+
+  createNew = async (event) => {
+    const saved = await this.newBlog.current.createNew(event)
+    this.setState({ blogs: this.state.blogs.concat(saved) })
   }
 
   render() {
@@ -92,13 +98,21 @@ class App extends React.Component {
         <form onSubmit={ this.logout }>
           <div>{ this.state.user.name } logged in&nbsp;
           <button type="submit">logout</button></div>
-          <br/>
-          <div>  
-            { this.state.blogs.map(blog => 
-              <Blog key={blog.id} blog={blog}/>
-            )}
-          </div>
         </form>
+        <br/>
+        <h3>create new</h3>
+        <form onSubmit={ this.createNew }>
+        <NewBlog ref={ this.newBlog }  />
+        <div>
+          <button tyoe="submit">create</button>
+        </div>
+        </form>
+        <br/>
+        <div>  
+          { this.state.blogs.map(blog => 
+            <Blog key={ blog.id } blog={ blog }/>
+          )}
+        </div>
       </div>
     )
 
