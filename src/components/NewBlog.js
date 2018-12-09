@@ -1,5 +1,4 @@
 import React from 'react'
-import blogService from '../services/blogs'
 
 class NewBlog extends React.Component {
   constructor(props) {
@@ -15,19 +14,20 @@ class NewBlog extends React.Component {
     this.setState({ [event.target.name]: event.target.value })
   }
 
-  createNew = async (event) => {
-    event.preventDefault()
-    const saved = await blogService.createNew({
-      title: this.state.title,
-      author: this.state.author,
-      url: this.state.url,
-    })
+  clear = async () => {
     this.setState({
       title: '',
       author: '',
       url: '',
     })
-    return saved
+  }
+
+  getValue = async () => {
+    return {
+      title: this.state.title,
+      author: this.state.author,
+      url: this.state.url,
+    }
   }
 
   render() {

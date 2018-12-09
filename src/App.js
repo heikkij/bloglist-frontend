@@ -4,6 +4,7 @@ import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable';
 
 class App extends React.Component {
   constructor(props) {
@@ -65,9 +66,12 @@ class App extends React.Component {
   }
 
   createNew = async (event) => {
-    const saved = await this.newBlog.current.createNew(event)
-    this.setState({ blogs: this.state.blogs.concat(saved) })
-    this.showMessage(`a new blog '${saved.title}' by ${saved.author} added`)
+    event.preventDefault()
+    const newBlog = await this.newBlog.current.getValue()
+    const savedBlog = await blogService.createNew(newBlog)
+    this.setState({ blogs: this.state.blogs.concat(savedBlog) })
+    await this.newBlog.current.clear()
+    this.showMessage(`a new blog '${savedBlog.title}' by ${savedBlog.author} added`)
   }
 
   render() {
@@ -107,6 +111,7 @@ class App extends React.Component {
           <button type="submit">logout</button></div>
         </form>
         <br/>
+        <Togglable buttonLabel='new blog'>
         <h3>create new</h3>
         <form onSubmit={ this.createNew }>
         <NewBlog ref={ this.newBlog }  />
@@ -114,6 +119,7 @@ class App extends React.Component {
           <button tyoe="submit">create</button>
         </div>
         </form>
+        </Togglable>
         <br/>
         <div>  
           { this.state.blogs.map(blog => 
