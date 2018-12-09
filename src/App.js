@@ -1,6 +1,7 @@
 import React from 'react'
 import Blog from './components/Blog'
 import NewBlog from './components/NewBlog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -9,7 +10,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       blogs: [],
-      error: null,
+      message: null,
       username: '',
       password: '',
       user: null,
@@ -41,17 +42,22 @@ class App extends React.Component {
       blogService.setToken(user.token)
       this.setState({ username: '', password: '', user})
     } catch(exception) {
-      this.setState({
-        error: 'login error',
-      })
-      setTimeout(() => {
-        this.setState({ error: null })
-      }, 5000)
+      this.showMessage('login error')
+      console.error(exception)
     }
   }
 
   logout = async (event) => {
     window.localStorage.removeItem('loggedBlogAppUser')
+  }
+
+  showMessage = async (message) => {
+    this.setState({
+      message,
+    })
+    setTimeout(() => {
+      this.setState({ message: null })
+    }, 5000)
   }
 
   handleLoginChange = (event) => {
@@ -61,6 +67,7 @@ class App extends React.Component {
   createNew = async (event) => {
     const saved = await this.newBlog.current.createNew(event)
     this.setState({ blogs: this.state.blogs.concat(saved) })
+    this.showMessage(`a new blog '${saved.title}' by ${saved.author} added`)
   }
 
   render() {
@@ -118,7 +125,7 @@ class App extends React.Component {
 
     return (
       <div>
-        <h3>{ this.state.error }</h3>
+        <Notification message={this.state.message}/>
         { this.state.user === null ? loginForm() : blogsSection() }        
       </div>
     );
