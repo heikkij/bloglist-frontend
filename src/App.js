@@ -132,7 +132,7 @@ class App extends React.Component {
     return (
       <div>
         <Notification message={this.state.message}/>
-        { this.state.user === null ? loginForm() : blogsSection() }        
+        { this.state.user === null || this.state.user.token == null ? loginForm() : blogsSection() }        
       </div>
     );
   }
