@@ -112,13 +112,13 @@ class App extends React.Component {
         </form>
         <br/>
         <Togglable buttonLabel='new blog'>
-        <h3>create new</h3>
-        <form onSubmit={ this.createNew }>
-        <NewBlog ref={ this.newBlog }  />
-        <div>
-          <button tyoe="submit">create</button>
-        </div>
-        </form>
+          <h3>create new</h3>
+          <form onSubmit={ this.createNew }>
+            <NewBlog ref={ this.newBlog }  />
+            <div>
+              <button tyoe="submit">create</button>
+            </div>
+          </form>
         </Togglable>
         <br/>
         <div>  
