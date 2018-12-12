@@ -103,6 +103,7 @@ class App extends React.Component {
       </div>
     )
 
+    const blogsToShow = this.state.blogs.sort((a, b) => b.likes - a.likes)
     const blogsSection = () => (
       <div>
         <h2>blogs</h2>
@@ -122,7 +123,7 @@ class App extends React.Component {
         </Togglable>
         <br/>
         <div>  
-          { this.state.blogs.map(blog => 
+          { blogsToShow.map(blog => 
             <Blog key={ blog.id } blog={ blog }/>
           )}
         </div>
